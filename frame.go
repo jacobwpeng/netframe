@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	MAGIC         = 0xdead9001
-	MAX_SIZE      = 65536
-	HEADER_SIZE   = 104
-	MAX_BODY_SIZE = MAX_SIZE - HEADER_SIZE
+	MAGIC         uint32 = 0xdead9001
+	MAX_SIZE             = 65536
+	HEADER_SIZE          = 104
+	MAX_BODY_SIZE        = MAX_SIZE - HEADER_SIZE
 )
 
 type Frame struct {
@@ -42,7 +42,6 @@ func (f *Frame) ReadFrom(reader io.Reader) (int64, error) {
 	binary.Read(reader, binary.LittleEndian, &f.ErrCode)
 	binary.Read(reader, binary.LittleEndian, &f.BodySize)
 	binary.Read(reader, binary.LittleEndian, &f.Reserved)
-	binary.Read(reader, binary.LittleEndian, &f.BodySize)
 	if sr.Err != nil {
 		return cr.Count(), sr.Err
 	}
@@ -67,7 +66,6 @@ func (f *Frame) WriteTo(w io.Writer) (n int64, err error) {
 	binary.Write(sw, binary.LittleEndian, f.ErrCode)
 	binary.Write(sw, binary.LittleEndian, f.BodySize)
 	binary.Write(sw, binary.LittleEndian, f.Reserved)
-	binary.Write(sw, binary.LittleEndian, f.BodySize)
 	sw.Write(f.Body[:f.BodySize])
 	return cw.Count(), sw.Err
 }
